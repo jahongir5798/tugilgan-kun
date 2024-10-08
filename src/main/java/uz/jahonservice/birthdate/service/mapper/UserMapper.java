@@ -17,7 +17,7 @@ public class UserMapper {
 
     private final UserServiceImpl userServiceImpl;
 
-    public UserMapper(@Lazy PasswordEncoder passwordEncoder, @Lazy UserServiceImpl userServiceImpl) {
+    public UserMapper(PasswordEncoder passwordEncoder, @Lazy UserServiceImpl userServiceImpl) {
         this.passwordEncoder = passwordEncoder;
         this.userServiceImpl = userServiceImpl;
     }
