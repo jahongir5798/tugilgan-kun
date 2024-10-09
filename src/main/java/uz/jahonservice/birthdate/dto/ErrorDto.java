@@ -8,6 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 
+
+
 public class ErrorDto {
 
     private String field;
