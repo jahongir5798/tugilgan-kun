@@ -8,7 +8,6 @@ import uz.jahonservice.birthdate.dto.ApiResponse;
 import uz.jahonservice.birthdate.dto.SignInDto;
 import uz.jahonservice.birthdate.dto.SignUpDto;
 import uz.jahonservice.birthdate.dto.UserDto;
-import uz.jahonservice.birthdate.exceptions.MyException;
 import uz.jahonservice.birthdate.service.AuthService;
 
 @RestController()
@@ -19,7 +18,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PutMapping("/registration")
+    @PostMapping("/registration")
     public ApiResponse<UserDto> registration(
             @RequestBody @Valid SignUpDto dto
     ) {
@@ -29,7 +28,7 @@ public class AuthController {
         return registration;
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ApiResponse<String> login(
             @RequestBody @Valid SignInDto signInDto
     ) {

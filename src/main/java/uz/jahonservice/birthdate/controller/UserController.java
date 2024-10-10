@@ -31,33 +31,16 @@ public class UserController {
         return userService.changePassword(oldPassword, newPassword, email);
     }
 
-    @PatchMapping("/change/email")
-//    @PreAuthorize("hasAnyRole()") todo: meningcha role bu methodga kerakemas sababi hamma uz emailni ugartira bilishi kerak
-    public ApiResponse<UserDto> changeEmail(
-            @RequestParam String email,
-            @RequestParam String newEmail
-    ){
-        return userService.changeEmail(email, newEmail);
-    }
-
-    @PatchMapping("/change/firstName")
-    public ApiResponse<UserDto> changeName(
+    @PutMapping("/change/serInfo")
+    public ApiResponse<UserDto> changeSerInfo(
             @RequestParam String firstName,
-            @RequestParam String password,
-            @RequestParam String email
-    ){
-        return userService.changeName(firstName, password, email );
-    }
-
-    @PatchMapping("/change/lastName")
-    public ApiResponse<UserDto> changeLastName(
             @RequestParam String lastName,
-            @RequestParam String password,
+            @RequestParam String newEmail,
             @RequestParam String email
     ){
-        log.info("User controller change last name method called");
-        ApiResponse<UserDto> userDtoApiResponse = userService.changeLastName(lastName, password, email);
-        log.info("User controller change last name method response: {}", userDtoApiResponse);
+        log.info("UserController changeInfo method called");
+        ApiResponse<UserDto> userDtoApiResponse = userService.changeUserInfo(firstName, lastName, newEmail, email);
+        log.info("User controller changeInfo method response: {}", userDtoApiResponse);
         return userDtoApiResponse;
     }
 

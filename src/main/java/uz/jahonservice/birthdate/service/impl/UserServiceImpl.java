@@ -64,88 +64,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public ApiResponse<UserDto> changeEmail(String email, String newEmail) {
-        List<ErrorDto> errors = this.userInfoValidator.isValidEmail(newEmail);
-        if (!errors.isEmpty()) {
-            return ApiResponse.<UserDto>builder()
-                    .code(-2)
-                    .success(false)
-                    .errorList(errors)
-                    .build();
-        }
-        try {
-            User user = this.userRepository.findByEmail(email).orElseThrow();
-            user.setEmail(newEmail);
-            this.userRepository.save(user);
-            return ApiResponse.<UserDto>builder()
-                    .code(0)
-                    .success(true)
-                    .data(this.userMapper.toDto(user))
-                    .build();
-        } catch (Exception e) {
-            throw new DatabaseException("Database exception while changing email");
-        }
-    }
 
-    @Override
-    public ApiResponse<UserDto> changeName(String firstName, String password, String email) {
-        if (firstName == null || firstName.isEmpty()) {
-            List<ErrorDto> errors = new ArrayList<>();
-            errors.add(new ErrorDto("firstName", "firstName cannot be null"));
-            return ApiResponse.<UserDto>builder()
-                    .code(-2)
-                    .success(false)
-                    .errorList(errors)
-                    .build();
-        }
-        try {
-            User user = this.userRepository.findByEmail(email).orElseThrow();
-            if (!passwordEncoder.matches(password, user.getPassword())) {
-                throw new MyException("Password wrong");
-            }
-            user.setFirstName(firstName);
-            userRepository.save(user);
 
-            return ApiResponse.<UserDto>builder()
-                    .code(0)
-                    .success(true)
-                    .data(userMapper.toDto(user))
-                    .build();
-
-        } catch (Exception e) {
-            throw new DatabaseException("Database exception while changing name");
-        }
-    }
-
-    @Override
-    public ApiResponse<UserDto> changeLastName(String lastName, String password, String email) {
-        if (lastName == null || lastName.isEmpty()) {
-            List<ErrorDto> errors = new ArrayList<>();
-            errors.add(new ErrorDto("lastName", "lastName cannot be null or empty"));
-            return ApiResponse.<UserDto>builder()
-                    .code(-2)
-                    .success(false)
-                    .errorList(errors)
-                    .build();
-        }
-        try {
-            User user = userRepository.findByEmail(email).orElseThrow();
-            if (!passwordEncoder.matches(password, user.getPassword())) {
-                throw new MyException("Password wrong");
-            }
-
-            user.setLastName(lastName);
-            userRepository.save(user);
-            return ApiResponse.<UserDto>builder()
-                    .code(0)
-                    .success(true)
-                    .data(userMapper.toDto(user))
-                    .build();
-        } catch (Exception e) {
-            throw new DatabaseException("Database exception while changing last name");
-        }
-    }
 
     @Override
     public ApiResponse<UserDto> createUser(SignUpDto signUpDto) {
@@ -196,6 +116,32 @@ public class UserServiceImpl implements UserService {
            throw new DatabaseException("Database exception while deleting user");
        }
 
+    }
+
+    @Override
+    public ApiResponse<UserDto> changeUserInfo(String firstName, String lastName, String newEmail, String email) {
+        List<ErrorDto> errors = this.userInfoValidator.isValidEmail(newEmail);
+        if (!errors.isEmpty()) {
+            return ApiResponse.<UserDto>builder()
+                    .code(-2)
+                    .success(false)
+                    .errorList(errors)
+                    .build();
+        }
+      try {
+          User user = userRepository.findByEmail(email).orElseThrow(() -> new MyException("User not found"));
+          user.setFirstName(firstName);
+          user.setLastName(lastName);
+          user.setEmail(newEmail);
+          userRepository.save(user);
+          return ApiResponse.<UserDto>builder()
+                  .code(0)
+                  .success(true)
+                  .data(userMapper.toDto(user))
+                  .build();
+      }catch (Exception e){
+          throw new DatabaseException("Database exception while changing user info");
+      }
     }
 
     public Integer leftDays(LocalDate birthDate) {
