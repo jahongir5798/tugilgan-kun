@@ -144,6 +144,22 @@ public class UserServiceImpl implements UserService {
       }
     }
 
+    @Override
+    public ApiResponse<List<UserDto>> getAllUsers() {
+        try {
+            List<User> users = this.userRepository.findAll();
+            List<UserDto> list = users.stream().map(userMapper::toDto).toList();
+            return ApiResponse.<List<UserDto>>builder()
+                    .code(0)
+                    .success(true)
+                    .data(list)
+                    .build();
+        }catch (Exception e){
+            throw new DatabaseException("Database exception while getting all users");
+        }
+
+    }
+
     public Integer leftDays(LocalDate birthDate) {
         LocalDate now = LocalDate.now();
         birthDate = birthDate.withYear(LocalDate.now().getYear());

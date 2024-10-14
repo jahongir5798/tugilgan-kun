@@ -49,10 +49,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResponse<String> login(SignInDto signInDto){
 
-        if (!signInDto.getPassword().equals(signInDto.getPrePassword())) {
-            throw new MyException("Passwords do not match");
-        }
-
         User user = this.userRepository.findByEmail(signInDto.getEmail()).orElseThrow(() -> new MyException("This user does not exist"));
 
         if (!passwordEncoder.matches(signInDto.getPassword(), user.getPassword())) {

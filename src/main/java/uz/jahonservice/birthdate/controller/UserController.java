@@ -12,6 +12,8 @@ import uz.jahonservice.birthdate.dto.SignUpDto;
 import uz.jahonservice.birthdate.dto.UserDto;
 import uz.jahonservice.birthdate.service.UserService;
 
+import java.util.List;
+
 @Log4j2
 @RestController
 @RequestMapping("api/user")
@@ -60,6 +62,15 @@ public class UserController {
         ApiResponse<UserDto> deleteUser = userService.deleteUser(email);
         log.info("User controller delete user method response: {}", deleteUser);
         return deleteUser;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<List<UserDto>> getAllUsers() {
+        log.info("User controller getAllUsers method called");
+        ApiResponse<List<UserDto>> allUsers = userService.getAllUsers();
+        log.info("User controller getAllUsers method response: {}", allUsers);
+        return allUsers;
     }
 
 
