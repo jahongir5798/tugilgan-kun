@@ -23,7 +23,7 @@ POST http://localhost:8090/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "jahongirjuraqulov5788@gmail.com",
-  "password": "Jahon$12",
-  "prePassword": "Jahon$12"
+  "email": "boltayevTesha@gmail.com",
+  "password": "Jahon$123",
+  "prePassword": "Jahon$123"
 }

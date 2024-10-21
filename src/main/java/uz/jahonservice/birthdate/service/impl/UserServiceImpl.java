@@ -2,6 +2,9 @@ package uz.jahonservice.birthdate.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.jahonservice.birthdate.dto.ApiResponse;
@@ -158,6 +161,33 @@ public class UserServiceImpl implements UserService {
             throw new DatabaseException("Database exception while getting all users");
         }
 
+    }
+
+    @Override
+    public ApiResponse<Page<UserDto>> getAllUserWithPagination(Integer pageNumber, Integer size) {
+
+        Pageable pageable = PageRequest.of(pageNumber, size);
+        Page<User> users = this.userRepository.findAll(pageable);
+        Page<UserDto> userDto = users.map(userMapper::toDto);
+        return ApiResponse.<Page<UserDto>>builder()
+                .code(0)
+                .success(true)
+                .message("Successfully")
+                .data(userDto)
+                .build();
+    }
+
+    @Override
+    public ApiResponse<Page<UserDto>> findUsers(Integer pageNumber, Integer size, String firstName) {
+        Pageable pageable = PageRequest.of(pageNumber, size);
+        Page<User> byFirstNameContainingIgnoreCase = this.userRepository.findByFirstNameContainingIgnoreCase(firstName, pageable);
+        Page<UserDto> userDto = byFirstNameContainingIgnoreCase.map(userMapper::toDto);
+        return ApiResponse.<Page<UserDto>>builder()
+                .code(0)
+                .success(true)
+                .message("Successfully")
+                .data(userDto)
+                .build();
     }
 
     public Integer leftDays(LocalDate birthDate) {

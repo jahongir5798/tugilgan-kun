@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class UserController {
         return userService.changePassword(oldPassword, newPassword, email);
     }
 
-    @PutMapping("/change/serInfo")
+    @PutMapping("/change/userInfo")
     public ApiResponse<UserDto> changeSerInfo(
             @RequestParam String firstName,
             @RequestParam String lastName,
@@ -55,7 +56,7 @@ public class UserController {
         return user;
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<UserDto> deleteUser(@RequestParam @NotNull String email) {
         log.info("User controller delete user method called");
@@ -66,13 +67,38 @@ public class UserController {
 
 
 
-    @GetMapping
+    @GetMapping("/allUsers")
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<List<UserDto>> getAllUsers() {
         log.info("User controller getAllUsers method called");
         ApiResponse<List<UserDto>> allUsers = userService.getAllUsers();
         log.info("User controller getAllUsers method response: {}", allUsers);
         return allUsers;
+    }
+
+    @GetMapping("/allUsers/pagination")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<Page<UserDto>> getAllUserWithPagination(
+            @RequestParam Integer pageNumber,
+            @RequestParam Integer size
+    ){
+        log.info("User controller getAllUserWithPagination method called");
+        ApiResponse<Page<UserDto>> result = userService.getAllUserWithPagination(pageNumber, size);
+        log.info("User controller getAllUserWithPagination method response: {}", result);
+        return result;
+    }
+
+    @GetMapping("/allUsers/findByName")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<Page<UserDto>> findUsers(
+            @RequestParam Integer pageNumber,
+            @RequestParam Integer size,
+            @RequestParam String firstName
+    ){
+        log.info("User controller findUsers method called");
+        ApiResponse<Page<UserDto>> result = userService.findUsers(pageNumber, size, firstName);
+        log.info("User controller findUsers method response: {}", result);
+        return result;
     }
 
 

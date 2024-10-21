@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import uz.jahonservice.birthdate.dto.ApiResponse;
-import uz.jahonservice.birthdate.dto.SignInDto;
-import uz.jahonservice.birthdate.dto.SignUpDto;
-import uz.jahonservice.birthdate.dto.UserDto;
+import uz.jahonservice.birthdate.dto.*;
 import uz.jahonservice.birthdate.entity.User;
 import uz.jahonservice.birthdate.exceptions.MyException;
 import uz.jahonservice.birthdate.repository.UserRepository;
@@ -25,7 +22,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public ApiResponse<UserDto> registration(SignUpDto dto){
+    public JwtResponse<UserDto> registration(SignUpDto dto){
         if (this.userRepository.existsByEmail(dto.getEmail())) {
             throw new MyException("This email already exist");
         }
@@ -38,16 +35,16 @@ public class AuthServiceImpl implements AuthService {
         user = this.userRepository.save(user);
         UserDto userDto = this.userMapper.toDto(user);
 
-        return ApiResponse.<UserDto>builder()
+        return JwtResponse.<UserDto>builder()
                 .code(0)
-                .message("User registration successful")
+                .message("User succesfully registered")
                 .success(true)
                 .data(userDto)
                 .build();
     }
 
     @Override
-    public ApiResponse<String> login(SignInDto signInDto){
+    public JwtResponse<UserDto> login(SignInDto signInDto){
 
         User user = this.userRepository.findByEmail(signInDto.getEmail()).orElseThrow(() -> new MyException("This user does not exist"));
 
@@ -58,11 +55,12 @@ public class AuthServiceImpl implements AuthService {
         String token = this.jwtService.buildToken(userMapper.toUserEntityForBuildToken(signInDto));
 
 
-        return ApiResponse.<String>builder()
+        return JwtResponse.<UserDto>builder()
                 .code(0)
                 .message("Login successful")
                 .success(true)
-                .data(token)
+                .token(token)
+                .data(this.userMapper.toDto(user))
                 .build();
     }
 }

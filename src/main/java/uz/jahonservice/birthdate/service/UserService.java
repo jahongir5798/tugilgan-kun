@@ -1,5 +1,6 @@
 package uz.jahonservice.birthdate.service;
 
+import org.springframework.data.domain.Page;
 import uz.jahonservice.birthdate.dto.ApiResponse;
 import uz.jahonservice.birthdate.dto.SignUpDto;
 import uz.jahonservice.birthdate.dto.UserDto;
@@ -19,4 +20,7 @@ public interface UserService {
 
     ApiResponse<List<UserDto>> getAllUsers();
 
+    ApiResponse<Page<UserDto>> getAllUserWithPagination(Integer page, Integer size);
+
+    ApiResponse<Page<UserDto>> findUsers(Integer pageNumber, Integer size, String str);
 }
