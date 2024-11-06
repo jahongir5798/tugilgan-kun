@@ -10,9 +10,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UserDto {
 
-    private String firstname;
+    private String firstName;
 
-    private String lastname;
+    private String lastName;
 
     private LocalDate birthDate;
 

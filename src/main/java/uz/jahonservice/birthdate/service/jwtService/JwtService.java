@@ -44,7 +44,6 @@ public class JwtService {
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
-
     }
 
 

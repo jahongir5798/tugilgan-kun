@@ -6,6 +6,7 @@ import uz.jahonservice.birthdate.dto.SignUpDto;
 import uz.jahonservice.birthdate.dto.UserDto;
 import uz.jahonservice.birthdate.exceptions.DatabaseException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface UserService {
@@ -23,4 +24,6 @@ public interface UserService {
     ApiResponse<Page<UserDto>> getAllUserWithPagination(Integer page, Integer size);
 
     ApiResponse<Page<UserDto>> findUsers(Integer pageNumber, Integer size, String str);
+
+    Integer leftDays(LocalDate birthDate);
 }

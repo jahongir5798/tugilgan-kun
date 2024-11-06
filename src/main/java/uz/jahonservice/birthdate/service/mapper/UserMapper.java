@@ -1,6 +1,5 @@
 package uz.jahonservice.birthdate.service.mapper;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -34,8 +33,8 @@ public class UserMapper {
 
     public UserDto toDto(User user) {
         return UserDto.builder()
-                .firstname(user.getFirstName())
-                .lastname(user.getLastName())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .birthDate(user.getBirthDate())
                 .untilBirthDate(this.userServiceImpl.leftDays(user.getBirthDate()))
                 .build();

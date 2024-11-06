@@ -1,7 +1,6 @@
 package uz.jahonservice.birthdate.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,9 +20,7 @@ import uz.jahonservice.birthdate.service.validation.UserInfoValidator;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -59,13 +56,16 @@ public class UserServiceImpl implements UserService {
             return ApiResponse.<UserDto>builder()
                     .code(0)
                     .success(true)
-                    .data(this.userMapper.toDto(user))
+                    .user(this.userMapper.toDto(user))
                     .build();
 
         } catch (Exception e) {
             throw new DatabaseException("Database exception while changing password");
         }
     }
+
+
+
 
 
 
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
             return ApiResponse.<UserDto>builder()
                     .code(0)
                     .success(true)
-                    .data(
+                    .user(
                             userMapper.toDto(
                                     userRepository.save(
                                             userMapper.toUserEntity(signUpDto)
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
            return ApiResponse.<UserDto>builder()
                    .code(0)
                    .success(true)
-                   .data(userMapper.toDto(user))
+                   .user(userMapper.toDto(user))
                    .build();
        }catch (Exception e){
            throw new DatabaseException("Database exception while deleting user");
@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
           return ApiResponse.<UserDto>builder()
                   .code(0)
                   .success(true)
-                  .data(userMapper.toDto(user))
+                  .user(userMapper.toDto(user))
                   .build();
       }catch (Exception e){
           throw new DatabaseException("Database exception while changing user info");
@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService {
             return ApiResponse.<List<UserDto>>builder()
                     .code(0)
                     .success(true)
-                    .data(list)
+                    .user(list)
                     .build();
         }catch (Exception e){
             throw new DatabaseException("Database exception while getting all users");
@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
                 .code(0)
                 .success(true)
                 .message("Successfully")
-                .data(userDto)
+                .user(userDto)
                 .build();
     }
 
@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
                 .code(0)
                 .success(true)
                 .message("Successfully")
-                .data(userDto)
+                .user(userDto)
                 .build();
     }
 
