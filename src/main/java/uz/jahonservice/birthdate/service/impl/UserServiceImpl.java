@@ -155,6 +155,7 @@ public class UserServiceImpl implements UserService {
             return ApiResponse.<List<UserDto>>builder()
                     .code(0)
                     .success(true)
+                    .message("All users here")
                     .user(list)
                     .build();
         }catch (Exception e){

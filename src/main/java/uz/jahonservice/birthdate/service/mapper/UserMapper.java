@@ -35,6 +35,7 @@ public class UserMapper {
         return UserDto.builder()
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .role(user.getRole())
                 .birthDate(user.getBirthDate())
                 .untilBirthDate(this.userServiceImpl.leftDays(user.getBirthDate()))
                 .build();

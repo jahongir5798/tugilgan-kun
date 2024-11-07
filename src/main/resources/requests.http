@@ -27,3 +27,7 @@ Content-Type: application/json
   "password": "Jahon$123",
   "prePassword": "Jahon$123"
 }
+
+###
+GET http://localhost:8090/api/user/allUsers
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib2x0YXlldlRlc2hhQGdtYWlsLmNvbSIsImlhdCI6MTczMDk2NjUwOCwiZXhwIjoxNzMxMDAyNTA4fQ.V3OdsIulZuAsA23tNznvHtACR5TFlqsusP18hyyObrs
