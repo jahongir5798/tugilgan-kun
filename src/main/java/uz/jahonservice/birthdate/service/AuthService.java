@@ -1,6 +1,7 @@
 package uz.jahonservice.birthdate.service;
 
 import uz.jahonservice.birthdate.dto.*;
+import uz.jahonservice.birthdate.dto.response.JwtResponse;
 import uz.jahonservice.birthdate.exceptions.MyException;
 
 public interface AuthService {

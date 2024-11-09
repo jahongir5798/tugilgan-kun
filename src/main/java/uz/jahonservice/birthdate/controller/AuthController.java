@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 import uz.jahonservice.birthdate.dto.*;
+import uz.jahonservice.birthdate.dto.response.JwtResponse;
 import uz.jahonservice.birthdate.service.AuthService;
 
 @RestController()

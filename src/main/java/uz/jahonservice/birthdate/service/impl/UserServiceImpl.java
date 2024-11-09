@@ -6,10 +6,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import uz.jahonservice.birthdate.dto.ApiResponse;
+import uz.jahonservice.birthdate.dto.response.ApiResponse;
 import uz.jahonservice.birthdate.dto.ErrorDto;
 import uz.jahonservice.birthdate.dto.SignUpDto;
 import uz.jahonservice.birthdate.dto.UserDto;
+import uz.jahonservice.birthdate.dto.response.PageResponse;
 import uz.jahonservice.birthdate.entity.User;
 import uz.jahonservice.birthdate.exceptions.DatabaseException;
 import uz.jahonservice.birthdate.exceptions.MyException;
@@ -148,48 +149,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<List<UserDto>> getAllUsers() {
-        try {
-            List<User> users = this.userRepository.findAll();
-            List<UserDto> list = users.stream().map(userMapper::toDto).toList();
-            return ApiResponse.<List<UserDto>>builder()
+    public PageResponse<List<UserDto>> getAllUsers(Integer size, Integer page, String pattern) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (pattern == null){
+            Page<User> pageUsers = userRepository.findAll(pageable);
+            return PageResponse.<List<UserDto>>builder()
                     .code(0)
-                    .success(true)
-                    .message("All users here")
-                    .user(list)
+                    .message("Jura string null kelgan menga hamma userni qaytardim")
+                    .page(pageUsers.getNumber())
+                    .size(pageUsers.getSize())
+                    .total(pageUsers.getTotalPages())
+                    .list(pageUsers.map(userMapper::toDto).toList())
                     .build();
-        }catch (Exception e){
-            throw new DatabaseException("Database exception while getting all users");
         }
 
-    }
-
-    @Override
-    public ApiResponse<Page<UserDto>> getAllUserWithPagination(Integer pageNumber, Integer size) {
-
-        Pageable pageable = PageRequest.of(pageNumber, size);
-        Page<User> users = this.userRepository.findAll(pageable);
-        Page<UserDto> userDto = users.map(userMapper::toDto);
-        return ApiResponse.<Page<UserDto>>builder()
+        Page<User> users = userRepository.findByFirstNameContainingIgnoreCase(pattern, pageable);
+        return PageResponse.<List<UserDto>>builder()
                 .code(0)
-                .success(true)
-                .message("Successfully")
-                .user(userDto)
+                .message("uxshash userlar")
+                .page(users.getNumber())
+                .size(users.getSize())
+                .total(users.getTotalPages())
+                .list(users.map(userMapper::toDto).toList())
                 .build();
     }
 
-    @Override
-    public ApiResponse<Page<UserDto>> findUsers(Integer pageNumber, Integer size, String firstName) {
-        Pageable pageable = PageRequest.of(pageNumber, size);
-        Page<User> byFirstNameContainingIgnoreCase = this.userRepository.findByFirstNameContainingIgnoreCase(firstName, pageable);
-        Page<UserDto> userDto = byFirstNameContainingIgnoreCase.map(userMapper::toDto);
-        return ApiResponse.<Page<UserDto>>builder()
-                .code(0)
-                .success(true)
-                .message("Successfully")
-                .user(userDto)
-                .build();
-    }
 
     public Integer leftDays(LocalDate birthDate) {
         LocalDate now = LocalDate.now();

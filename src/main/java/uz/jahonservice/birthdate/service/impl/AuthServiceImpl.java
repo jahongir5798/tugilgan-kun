@@ -1,10 +1,10 @@
 package uz.jahonservice.birthdate.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.jahonservice.birthdate.dto.*;
+import uz.jahonservice.birthdate.dto.response.JwtResponse;
 import uz.jahonservice.birthdate.entity.User;
 import uz.jahonservice.birthdate.exceptions.MyException;
 import uz.jahonservice.birthdate.repository.UserRepository;

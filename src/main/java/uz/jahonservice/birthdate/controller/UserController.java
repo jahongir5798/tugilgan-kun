@@ -4,13 +4,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
-import uz.jahonservice.birthdate.dto.ApiResponse;
+import uz.jahonservice.birthdate.dto.response.ApiResponse;
 import uz.jahonservice.birthdate.dto.SignUpDto;
 import uz.jahonservice.birthdate.dto.UserDto;
+import uz.jahonservice.birthdate.dto.response.PageResponse;
 import uz.jahonservice.birthdate.service.UserService;
 
 import java.util.List;
@@ -69,37 +69,20 @@ public class UserController {
 
     @GetMapping("/allUsers")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<List<UserDto>> getAllUsers() {
+    public PageResponse<List<UserDto>> getAllUsers(
+            @RequestParam Integer size,
+            @RequestParam Integer page,
+            @RequestParam (required = false) String userNapePattern
+    ) {
         log.info("User controller getAllUsers method called");
-        ApiResponse<List<UserDto>> allUsers = userService.getAllUsers();
+        PageResponse<List<UserDto>> allUsers = userService.getAllUsers(size, page, userNapePattern);
         log.info("User controller getAllUsers method response: {}", allUsers);
         return allUsers;
     }
 
-    @GetMapping("/allUsers/pagination")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<Page<UserDto>> getAllUserWithPagination(
-            @RequestParam Integer pageNumber,
-            @RequestParam Integer size
-    ){
-        log.info("User controller getAllUserWithPagination method called");
-        ApiResponse<Page<UserDto>> result = userService.getAllUserWithPagination(pageNumber, size);
-        log.info("User controller getAllUserWithPagination method response: {}", result);
-        return result;
-    }
 
-    @GetMapping("/allUsers/findByName")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<Page<UserDto>> findUsers(
-            @RequestParam Integer pageNumber,
-            @RequestParam Integer size,
-            @RequestParam String firstName
-    ){
-        log.info("User controller findUsers method called");
-        ApiResponse<Page<UserDto>> result = userService.findUsers(pageNumber, size, firstName);
-        log.info("User controller findUsers method response: {}", result);
-        return result;
-    }
+
+
 
 
 

@@ -6,7 +6,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import uz.jahonservice.birthdate.dto.ApiResponse;
+import uz.jahonservice.birthdate.dto.response.ApiResponse;
 import uz.jahonservice.birthdate.dto.ErrorDto;
 
 import java.util.ArrayList;

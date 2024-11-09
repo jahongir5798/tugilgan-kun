@@ -1,6 +1,7 @@
-package uz.jahonservice.birthdate.dto;
+package uz.jahonservice.birthdate.dto.response;
 
 import lombok.*;
+import uz.jahonservice.birthdate.dto.ErrorDto;
 
 import java.util.List;
 

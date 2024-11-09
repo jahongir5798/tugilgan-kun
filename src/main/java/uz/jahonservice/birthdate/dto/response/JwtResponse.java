@@ -1,4 +1,4 @@
-package uz.jahonservice.birthdate.dto;
+package uz.jahonservice.birthdate.dto.response;
 
 import lombok.*;
 

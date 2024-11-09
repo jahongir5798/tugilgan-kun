@@ -20,4 +20,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Page<User> findAll(Pageable pageable);
 
     Page<User> findByFirstNameContainingIgnoreCase(String firstName, Pageable pageable);
+
 }
