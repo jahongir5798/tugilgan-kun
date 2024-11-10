@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
                 .code(0)
                 .message("User succesfully registered")
                 .success(true)
-                .data(userDto)
+                .user(userDto)
                 .build();
     }
 
@@ -60,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
                 .message("Login successful")
                 .success(true)
                 .token(token)
-                .data(this.userMapper.toDto(user))
+                .user(this.userMapper.toDto(user))
                 .build();
     }
 }

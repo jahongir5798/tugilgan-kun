@@ -17,6 +17,6 @@ public class JwtResponse <T> {
 
     String token;
 
-    T data;
+    T user;
 
 }
