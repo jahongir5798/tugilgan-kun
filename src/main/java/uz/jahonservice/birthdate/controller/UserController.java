@@ -72,10 +72,10 @@ public class UserController {
     public PageResponse<List<UserDto>> getAllUsers(
             @RequestParam Integer size,
             @RequestParam Integer page,
-            @RequestParam (required = false) String userNapePattern
+            @RequestParam (required = false) String userName
     ) {
         log.info("User controller getAllUsers method called");
-        PageResponse<List<UserDto>> allUsers = userService.getAllUsers(size, page, userNapePattern);
+        PageResponse<List<UserDto>> allUsers = userService.getAllUsers(size, page, userName);
         log.info("User controller getAllUsers method response: {}", allUsers);
         return allUsers;
     }

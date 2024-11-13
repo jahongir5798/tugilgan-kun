@@ -1,9 +1,6 @@
 package uz.jahonservice.birthdate.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.jahonservice.birthdate.dto.response.ApiResponse;
@@ -21,6 +18,7 @@ import uz.jahonservice.birthdate.service.validation.UserInfoValidator;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -150,27 +148,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageResponse<List<UserDto>> getAllUsers(Integer size, Integer page, String pattern) {
-        Pageable pageable = PageRequest.of(page, size);
         if (pattern == null){
-            Page<User> pageUsers = userRepository.findAll(pageable);
+            List<User> users = userRepository.findAll();
+            List<User> pageUsers = new ArrayList<>();
+
+            for (int i = (page - 1) * size + 1; i <= page * size && i < users.size() ; i++) {
+                pageUsers.add(users.get(i));
+            }
+
             return PageResponse.<List<UserDto>>builder()
                     .code(0)
+                    .success(true)
                     .message("Jura string null kelgan menga hamma userni qaytardim")
-                    .page(pageUsers.getNumber())
-                    .size(pageUsers.getSize())
-                    .total(pageUsers.getTotalPages())
-                    .list(pageUsers.map(userMapper::toDto).toList())
+                    .page(page)
+                    .size(size)
+                    .total(users.size())
+                    .users(pageUsers.stream().map(userMapper::toDto).toList())
                     .build();
         }
 
-        Page<User> users = userRepository.findByFirstNameContainingIgnoreCase(pattern, pageable);
+        List<User> users = userRepository.findAllByFirstNameContainingIgnoreCase(pattern);
+            List<User> pageUsers = new ArrayList<>();
+            for (int i = (page - 1) * size ; i < page * size && i < users.size() ; i++) {
+                pageUsers.add(users.get(i));
+            }
         return PageResponse.<List<UserDto>>builder()
                 .code(0)
-                .message("uxshash userlar")
-                .page(users.getNumber())
-                .size(users.getSize())
-                .total(users.getTotalPages())
-                .list(users.map(userMapper::toDto).toList())
+                .success(true)
+                .message(String.format("%s like users", pattern))
+                .page(page)
+                .size(size)
+                .total(users.size())
+                .users(pageUsers.stream().map(userMapper::toDto).toList())
                 .build();
     }
 

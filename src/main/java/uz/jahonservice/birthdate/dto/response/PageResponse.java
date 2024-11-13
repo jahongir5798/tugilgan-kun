@@ -2,8 +2,6 @@ package uz.jahonservice.birthdate.dto.response;
 
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,6 +21,6 @@ public class PageResponse <T>{
 
     private int total;
 
-    private T list;
+    private T users;
 
 }
