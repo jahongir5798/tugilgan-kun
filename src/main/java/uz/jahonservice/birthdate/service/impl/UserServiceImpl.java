@@ -8,6 +8,7 @@ import uz.jahonservice.birthdate.dto.ErrorDto;
 import uz.jahonservice.birthdate.dto.SignUpDto;
 import uz.jahonservice.birthdate.dto.UserDto;
 import uz.jahonservice.birthdate.dto.response.PageResponse;
+import uz.jahonservice.birthdate.entity.RoleEnum;
 import uz.jahonservice.birthdate.entity.User;
 import uz.jahonservice.birthdate.exceptions.DatabaseException;
 import uz.jahonservice.birthdate.exceptions.MyException;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,11 +66,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-
-
-
-
     @Override
     public ApiResponse<UserDto> createUser(SignUpDto signUpDto) {
         if (userRepository.existsByEmail(signUpDto.getEmail())) {
@@ -106,17 +103,17 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
 
-       try {
-           User user = userRepository.deleteByEmail(email).orElseThrow();
+        try {
+            User user = userRepository.deleteByEmail(email).orElseThrow();
 
-           return ApiResponse.<UserDto>builder()
-                   .code(0)
-                   .success(true)
-                   .user(userMapper.toDto(user))
-                   .build();
-       }catch (Exception e){
-           throw new DatabaseException("Database exception while deleting user");
-       }
+            return ApiResponse.<UserDto>builder()
+                    .code(0)
+                    .success(true)
+                    .user(userMapper.toDto(user))
+                    .build();
+        } catch (Exception e) {
+            throw new DatabaseException("Database exception while deleting user");
+        }
 
     }
 
@@ -130,29 +127,29 @@ public class UserServiceImpl implements UserService {
                     .errorList(errors)
                     .build();
         }
-      try {
-          User user = userRepository.findByEmail(email).orElseThrow(() -> new MyException("User not found"));
-          user.setFirstName(firstName);
-          user.setLastName(lastName);
-          user.setEmail(newEmail);
-          userRepository.save(user);
-          return ApiResponse.<UserDto>builder()
-                  .code(0)
-                  .success(true)
-                  .user(userMapper.toDto(user))
-                  .build();
-      }catch (Exception e){
-          throw new DatabaseException("Database exception while changing user info");
-      }
+        try {
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new MyException("User not found"));
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setEmail(newEmail);
+            userRepository.save(user);
+            return ApiResponse.<UserDto>builder()
+                    .code(0)
+                    .success(true)
+                    .user(userMapper.toDto(user))
+                    .build();
+        } catch (Exception e) {
+            throw new DatabaseException("Database exception while changing user info");
+        }
     }
 
     @Override
     public PageResponse<List<UserDto>> getAllUsers(Integer size, Integer page, String pattern) {
-        if (pattern == null){
-            List<User> users = userRepository.findAll();
+        if (pattern == null) {
+            List<User> users = removeAdmins(userRepository.findAll());
             List<User> pageUsers = new ArrayList<>();
 
-            for (int i = (page - 1) * size; i < page * size && i < users.size() ; i++) {
+            for (int i = (page - 1) * size; i < page * size && i < users.size(); i++) {
                 pageUsers.add(users.get(i));
             }
 
@@ -167,11 +164,11 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
 
-        List<User> users = userRepository.findAllByFirstNameContainingIgnoreCase(pattern);
-            List<User> pageUsers = new ArrayList<>();
-            for (int i = (page - 1) * size ; i < page * size && i < users.size() ; i++) {
-                pageUsers.add(users.get(i));
-            }
+        List<User> users = removeAdmins(userRepository.findAllByFirstNameContainingIgnoreCase(pattern));
+        List<User> pageUsers = new ArrayList<>();
+        for (int i = (page - 1) * size; i < page * size && i < users.size(); i++) {
+            pageUsers.add(users.get(i));
+        }
         return PageResponse.<List<UserDto>>builder()
                 .code(0)
                 .success(true)
@@ -191,5 +188,12 @@ public class UserServiceImpl implements UserService {
         long leftDays = ChronoUnit.DAYS.between(now, birthDate);
         return Integer.valueOf(Long.toString(leftDays));
     }
+
+    public List<User> removeAdmins(List<User> users) {
+        return users.stream()
+                .filter(user -> !user.getRole().equals(RoleEnum.ADMIN))
+                .collect(Collectors.toList());
+    }
+
 
 }
