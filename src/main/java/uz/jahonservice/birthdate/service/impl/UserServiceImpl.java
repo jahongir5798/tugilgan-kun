@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService {
             List<User> users = userRepository.findAll();
             List<User> pageUsers = new ArrayList<>();
 
-            for (int i = (page - 1) * size + 1; i <= page * size && i < users.size() ; i++) {
+            for (int i = (page - 1) * size; i < page * size && i < users.size() ; i++) {
                 pageUsers.add(users.get(i));
             }
 
