@@ -1,5 +1,6 @@
 package uz.jahonservice.birthdate.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,8 +80,9 @@ public class UserServiceImpl implements UserService {
         }
 
         try {
-            User user = userRepository.deleteByEmail(email).orElseThrow();
 
+            User user = userRepository.findById(Integer.valueOf(email)).orElseThrow();
+            userRepository.delete(user);
             return ApiResponse.<UserDto>builder()
                     .code(0)
                     .success(true)

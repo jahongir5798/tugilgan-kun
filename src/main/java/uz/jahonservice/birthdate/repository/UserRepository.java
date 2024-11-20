@@ -18,6 +18,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> deleteByEmail(String email);
 
+
 //    Page<User> findAll(Pageable pageable);
 //
 //    Page<User> findByFirstNameContainingIgnoreCase(String firstName, Pageable pageable);

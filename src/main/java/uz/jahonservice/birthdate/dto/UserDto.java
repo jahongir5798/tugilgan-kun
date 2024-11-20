@@ -12,6 +12,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UserDto {
 
+    private Integer id;
+
     private String firstName;
 
     private String lastName;
