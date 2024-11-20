@@ -3,6 +3,7 @@ package uz.jahonservice.birthdate.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import uz.jahonservice.birthdate.dto.UserUpdateDto;
 import uz.jahonservice.birthdate.dto.response.ApiResponse;
 import uz.jahonservice.birthdate.dto.ErrorDto;
 import uz.jahonservice.birthdate.dto.SignUpDto;
@@ -67,33 +68,6 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ApiResponse<UserDto> createUser(SignUpDto signUpDto) {
-        if (userRepository.existsByEmail(signUpDto.getEmail())) {
-            return ApiResponse.<UserDto>builder()
-                    .code(-2)
-                    .success(false)
-                    .errorList(List.of(new ErrorDto("email", "This email already exists")))
-                    .build();
-        }
-
-        try {
-            return ApiResponse.<UserDto>builder()
-                    .code(0)
-                    .success(true)
-                    .user(
-                            userMapper.toDto(
-                                    userRepository.save(
-                                            userMapper.toUserEntity(signUpDto)
-                                    )
-                            )
-                    )
-                    .build();
-        } catch (Exception e) {
-            throw new DatabaseException("Database exception while creating user");
-        }
-    }
-
-    @Override
     public ApiResponse<UserDto> deleteUser(String email) {
         if (email == null || email.isEmpty()) {
             return ApiResponse.<UserDto>builder()
@@ -118,30 +92,62 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<UserDto> changeUserInfo(String firstName, String lastName, String newEmail, String email) {
-        List<ErrorDto> errors = this.userInfoValidator.isValidEmail(newEmail);
+    public ApiResponse<UserDto> changeUserInfo(UserUpdateDto userDto,  String email) {
+        List<ErrorDto> errors = new ArrayList<>();
+        if (userDto.getEmail()!= null) errors.addAll(this.userInfoValidator.isValidEmail(email));
+        if (userDto.getBirthDate() != null) errors.addAll(userInfoValidator.isValidBirthday(userDto.getBirthDate()));
         if (!errors.isEmpty()) {
             return ApiResponse.<UserDto>builder()
                     .code(-2)
                     .success(false)
                     .errorList(errors)
+                    .message("Validation error")
                     .build();
         }
         try {
-            User user = userRepository.findByEmail(email).orElseThrow(() -> new MyException("User not found"));
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setEmail(newEmail);
-            userRepository.save(user);
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new MyException("This user does not exist"));
             return ApiResponse.<UserDto>builder()
                     .code(0)
                     .success(true)
-                    .user(userMapper.toDto(user))
+                    .message("User updated")
+                    .user(
+                            userMapper.toDto(
+                                    userRepository.save(
+                                            userMapper.updatedUser(user, userDto)
+                                    )
+                            )
+                    )
                     .build();
-        } catch (Exception e) {
-            throw new DatabaseException("Database exception while changing user info");
+        }catch (Exception e) {
+            throw new DatabaseException("Database exception while updating user");
         }
     }
+
+//    @Override
+//    public ApiResponse<UserDto> changeUserInfo(String firstName, String lastName, String newEmail, String email) {
+//        List<ErrorDto> errors = this.userInfoValidator.isValidEmail(newEmail);
+//        if (!errors.isEmpty()) {
+//            return ApiResponse.<UserDto>builder()
+//                    .code(-2)
+//                    .success(false)
+//                    .errorList(errors)
+//                    .build();
+//        }
+//        try {
+//            User user = userRepository.findByEmail(email).orElseThrow(() -> new MyException("User not found"));
+//            user.setFirstName(firstName);
+//            user.setLastName(lastName);
+//            user.setEmail(newEmail);
+//            userRepository.save(user);
+//            return ApiResponse.<UserDto>builder()
+//                    .code(0)
+//                    .success(true)
+//                    .user(userMapper.toDto(user))
+//                    .build();
+//        } catch (Exception e) {
+//            throw new DatabaseException("Database exception while changing user info");
+//        }
+//    }
 
     @Override
     public PageResponse<List<UserDto>> getAllUsers(Integer size, Integer page, String pattern) {

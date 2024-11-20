@@ -3,6 +3,7 @@ package uz.jahonservice.birthdate.service.validation;
 import org.springframework.stereotype.Component;
 import uz.jahonservice.birthdate.dto.ErrorDto;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -22,6 +23,14 @@ public class UserInfoValidator {
         List<ErrorDto> errors = new ArrayList<>();
         if (Pattern.matches( "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$",email)){
             errors.add(new ErrorDto("email", "Email is incorext"));
+        }
+        return errors;
+    }
+
+    public List<ErrorDto> isValidBirthday(LocalDate birthDate){
+        List<ErrorDto> errors = new ArrayList<>();
+        if (birthDate.isAfter(LocalDate.now())){
+            errors.add(new ErrorDto("birthday", "This birthdate is after the current date"));
         }
         return errors;
     }

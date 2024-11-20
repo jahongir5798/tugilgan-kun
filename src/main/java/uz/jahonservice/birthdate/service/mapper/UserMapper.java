@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import uz.jahonservice.birthdate.dto.SignInDto;
 import uz.jahonservice.birthdate.dto.SignUpDto;
 import uz.jahonservice.birthdate.dto.UserDto;
+import uz.jahonservice.birthdate.dto.UserUpdateDto;
 import uz.jahonservice.birthdate.entity.User;
 import uz.jahonservice.birthdate.service.impl.UserServiceImpl;
 
@@ -35,6 +36,7 @@ public class UserMapper {
         return UserDto.builder()
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .email(user.getEmail())
                 .role(user.getRole())
                 .birthDate(user.getBirthDate())
                 .untilBirthDate(this.userServiceImpl.leftDays(user.getBirthDate()))
@@ -45,5 +47,14 @@ public class UserMapper {
         return User.builder()
                 .email(dto.getEmail())
                 .build();
+    }
+
+
+    public User updatedUser(User oldUser, UserUpdateDto userDto) {
+        if (userDto.getFirstName() != null) oldUser.setFirstName(userDto.getFirstName());
+        if (userDto.getLastName() != null) oldUser.setLastName(userDto.getLastName());
+        if (userDto.getEmail() != null) oldUser.setEmail(userDto.getEmail());
+        if (userDto.getBirthDate() != null) oldUser.setBirthDate(userDto.getBirthDate());
+        return oldUser;
     }
 }

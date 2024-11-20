@@ -1,5 +1,6 @@
 package uz.jahonservice.birthdate.service;
 
+import uz.jahonservice.birthdate.dto.UserUpdateDto;
 import uz.jahonservice.birthdate.dto.response.ApiResponse;
 import uz.jahonservice.birthdate.dto.SignUpDto;
 import uz.jahonservice.birthdate.dto.UserDto;
@@ -11,16 +12,14 @@ import java.util.List;
 
 public interface UserService {
 
-    ApiResponse<UserDto> changePassword(String oldPassword, String newPassword, String email) throws DatabaseException;
+    ApiResponse<UserDto> changePassword(String oldPassword, String newPassword, String email);
 
-    ApiResponse<UserDto> createUser(SignUpDto signUpDto);
 
     ApiResponse<UserDto> deleteUser(String email);
 
-    ApiResponse<UserDto> changeUserInfo(String firstName, String lastName, String newEmail, String email);
+    ApiResponse<UserDto> changeUserInfo(UserUpdateDto userDto, String email);
 
     PageResponse<List<UserDto>> getAllUsers(Integer size, Integer page, String pattern);
 
     Integer leftDays(LocalDate birthDate);
-
 }

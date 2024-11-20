@@ -7,12 +7,14 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
+import uz.jahonservice.birthdate.dto.UserUpdateDto;
 import uz.jahonservice.birthdate.dto.response.ApiResponse;
 import uz.jahonservice.birthdate.dto.SignUpDto;
 import uz.jahonservice.birthdate.dto.UserDto;
 import uz.jahonservice.birthdate.dto.response.PageResponse;
 import uz.jahonservice.birthdate.service.UserService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Log4j2
@@ -34,27 +36,18 @@ public class UserController {
         return userService.changePassword(oldPassword, newPassword, email);
     }
 
-    @PutMapping("/change/userInfo")
+    @PutMapping("/change-user-info/{email}")
     public ApiResponse<UserDto> changeSerInfo(
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam String newEmail,
-            @RequestParam String email
+           @RequestBody UserUpdateDto userDto,
+            @PathVariable String email
     ){
         log.info("UserController changeInfo method called");
-        ApiResponse<UserDto> userDtoApiResponse = userService.changeUserInfo(firstName, lastName, newEmail, email);
+        ApiResponse<UserDto> userDtoApiResponse = userService.changeUserInfo(userDto, email);
         log.info("User controller changeInfo method response: {}", userDtoApiResponse);
         return userDtoApiResponse;
     }
 
-    @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<UserDto> createUser(@RequestBody @Valid SignUpDto signUpDto) {
-        log.info("User controller create user method called");
-        ApiResponse<UserDto> user = userService.createUser(signUpDto);
-        log.info("User controller create user method response: {}", user);
-        return user;
-    }
+
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
@@ -67,7 +60,7 @@ public class UserController {
 
 
 
-    @GetMapping("/allUsers")
+    @GetMapping("/all-users")
     @PreAuthorize("hasRole('ADMIN')")
     public PageResponse<List<UserDto>> getAllUsers(
             @RequestParam Integer size,
